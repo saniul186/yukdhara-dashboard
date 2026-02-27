@@ -9,7 +9,7 @@ import plotly.express as px
 # -----------------------
 st.set_page_config(page_title="Assam Yuktdhara Status Dashboard", layout="wide")
 
-st.title("🗺️ Assam Yukdhara Monitoring Dashboard")
+st.title("🗺️ Assam Yuktdhara Monitoring Dashboard")
 
 # -----------------------
 # LOAD DATA
@@ -307,3 +307,4 @@ else:
     
 
    
+
