@@ -7,7 +7,7 @@ import plotly.express as px
 # -----------------------
 # PAGE CONFIG
 # -----------------------
-st.set_page_config(page_title="Assam Yukdhara Status Dashboard", layout="wide")
+st.set_page_config(page_title="Assam Yuktdhara Status Dashboard", layout="wide")
 
 st.title("🗺️ Assam Yukdhara Monitoring Dashboard")
 
@@ -305,4 +305,5 @@ else:
     st.info("No districts currently between 85% and 99%.")
     
     
+
    
