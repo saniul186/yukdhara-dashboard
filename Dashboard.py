@@ -249,6 +249,21 @@ if not filtered_50_85.empty:
         barmode="group",
         title="Last Status vs Today Progress"
     )
+    
+    fig_compare.update_traces(
+        texttemplate='%{y:.1f}',
+        textposition='outside',
+        marker_line_width=1,
+        marker_line_color='black'
+    )
+
+    fig_compare.update_layout(
+        yaxis_title="Progress (%)",
+        xaxis_title="District",
+        uniformtext_minsize=8,
+        uniformtext_mode='hide'
+    )
+    
 
     st.plotly_chart(fig_compare, width="stretch")
 
@@ -256,7 +271,20 @@ else:
     st.info("No districts currently between 50% and 85%.")
     
     
-   # Filter 85–99%
+    # COMPARISON: 85% – 99%
+# -----------------------
+
+st.divider()
+st.subheader("📊 Districts (85% – 99%) : Last Status vs Today")
+
+progress_today = "Percentage of progress as on today status"
+progress_last = "Percentage of progress as on last status"
+
+# Ensure numeric
+data[progress_today] = pd.to_numeric(data[progress_today], errors="coerce")
+data[progress_last] = pd.to_numeric(data[progress_last], errors="coerce")
+
+# Filter 85–99%
 filtered_85_100 = data[
     (data[progress_today] >= 85) & (data[progress_today] < 100)
 ]
@@ -306,7 +334,4 @@ else:
     st.info("No districts currently between 85% and 99%.")
     
     
-
    
-
-
