@@ -47,6 +47,28 @@ data = data[data["Sl. No."].astype(str) != "State Total"]
 # Remove completely blank district rows
 data = data[data["District"].astype(str).str.strip() != ""]
 
+# Standardize District names (IMPORTANT)
+data["District"] = data["District"].str.strip().str.upper()
+
+
+# -----------------------
+# LOAD GEOJSON
+# -----------------------
+
+import json
+
+with open("assam_districts.geojson") as f:
+    geojson_data = json.load(f)
+
+# Standardize GeoJSON district names (IMPORTANT)
+for feature in geojson_data["features"]:
+    feature["properties"]["District"] = (
+        feature["properties"]["District"].strip().upper()
+    )
+
+# -----------------------
+
+
 # -----------------------
 # TOTAL PROGRESS CALCULATION
 # -----------------------
@@ -167,6 +189,30 @@ with col5:
     
     
     # -----------------------
+    st.divider()
+st.subheader("District-wise Progress Map")
+
+fig_map = px.choropleth(
+    data_frame=data,
+    geojson=geojson_data,
+    featureidkey="properties.District",
+    locations="District",
+    color="Percentage of progress as on today status",
+    color_continuous_scale="Blues",
+    range_color=(0, 100),
+)
+
+fig_map.update_geos(
+    fitbounds="locations",
+    visible=False
+)
+
+fig_map.update_layout(
+    margin={"r":0,"t":0,"l":0,"b":0}
+)
+
+st.plotly_chart(fig_map, use_container_width=True)
+    
 # COMPARISON: 0% – 49%
 # -----------------------
 
