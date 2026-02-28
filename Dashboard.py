@@ -202,6 +202,10 @@ fig_map = px.choropleth(
     range_color=(0, 100),
 )
 
+#fig_map.update_geos(
+    #fitbounds="locations",
+    #visible=False
+#)#
 fig_map.update_geos(
     fitbounds="locations",
     visible=False
@@ -211,7 +215,15 @@ fig_map.update_layout(
     margin={"r":0,"t":0,"l":0,"b":0}
 )
 
-st.plotly_chart(fig_map, use_container_width=True)
+#st.plotly_chart(fig_map, use_container_width=True)
+st.plotly_chart(
+    fig_map,
+    use_container_width=True,
+    config={
+        "scrollZoom": False,
+        "displayModeBar": False
+    }
+)
     
 # COMPARISON: 0% – 49%
 # -----------------------
