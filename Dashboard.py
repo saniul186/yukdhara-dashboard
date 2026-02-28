@@ -11,6 +11,7 @@ st.set_page_config(page_title="Assam Yuktdhara Status Dashboard", layout="wide")
 
 st.title("🗺️ Assam Yuktdhara Monitoring Dashboard")
 
+
 # -----------------------
 # LOAD DATA
 # -----------------------
@@ -45,6 +46,20 @@ data = data[data["Sl. No."].astype(str) != "State Total"]
 
 # Remove completely blank district rows
 data = data[data["District"].astype(str).str.strip() != ""]
+
+# -----------------------
+# TOTAL PROGRESS CALCULATION
+# -----------------------
+
+gp_column = "GP Plan started"
+
+# Convert to numeric safely
+data[gp_column] = pd.to_numeric(data[gp_column], errors="coerce")
+
+total_gp_yet = data[gp_column].sum()
+
+total_progress_percent = (total_gp_yet / 2654) * 100
+
 # # -----------------------
 # KPI SECTION (Correct Logic)
 # -----------------------
@@ -53,8 +68,6 @@ progress_col = "Percentage of progress as on today status"
 
 # Ensure numeric
 data[progress_col] = pd.to_numeric(data[progress_col], errors="coerce")
-
-total_districts = data["District"].nunique()
 
 completed_100 = data[data[progress_col].round(2) >= 100].shape[0]
 
@@ -67,6 +80,10 @@ between_50_85 = data[
 ].shape[0]
 
 below_50 = data[data[progress_col] < 50].shape[0]
+
+districts_100 = data[
+    data[progress_col].round(2) >= 100
+]["District"].sort_values().tolist()
 
 
 
@@ -103,15 +120,16 @@ col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     st.markdown(f"""
     <div class="kpi-card blue">
-        <div class="kpi-title">Total Districts</div>
-        <div class="kpi-value">{total_districts}</div>
+        <div class="kpi-title">Total Progress Percentage</div>
+        <div class="kpi-value">{total_progress_percent:.2f}</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown(f"""
     <div class="kpi-card green">
-        <div class="kpi-title">100%</div>
+        <div class="kpi-title">
+        <a href="#achievement-section" style="text-decoration:none; color:white;">District achieved 100%</div>
         <div class="kpi-value">{completed_100}</div>
     </div>
     """, unsafe_allow_html=True)
@@ -119,7 +137,9 @@ with col2:
 with col3:
     st.markdown(f"""
     <div class="kpi-card lightyellow">
-        <div class="kpi-title">85% – 99%</div>
+        <div class="kpi-title">
+        <a href="#85% – 99%" style="text-decoration:none; color:white;">
+        District Between 85% – 99%</div>
         <div class="kpi-value">{between_85_100}</div>
     </div>
     """, unsafe_allow_html=True)
@@ -127,7 +147,9 @@ with col3:
 with col4:
     st.markdown(f"""
     <div class="kpi-card orange">
-        <div class="kpi-title">50% – 84%</div>
+        <div class="kpi-title">
+        <a href="#50% – 84%" style="text-decoration:none; color:white;">
+        District Between 50% – 84%</div>
         <div class="kpi-value">{between_50_85}</div>
     </div>
     """, unsafe_allow_html=True)
@@ -135,16 +157,21 @@ with col4:
 with col5:
     st.markdown(f"""
     <div class="kpi-card red">
-        <div class="kpi-title">&lt; 50%</div>
+        <div class="kpi-title">
+        <a href="#0% – 49%" style="text-decoration:none; color:white;">
+        District &lt; 50%</div>
         <div class="kpi-value">{below_50}</div>
     </div>
     """, unsafe_allow_html=True)
+    
+    
     
     # -----------------------
 # COMPARISON: 0% – 49%
 # -----------------------
 
 st.divider()
+st.markdown("<div id='0% – 49%'></div>", unsafe_allow_html=True)
 st.subheader("📊 Districts (0% – 49%) : Last Status vs Today")
 
 progress_today = "Percentage of progress as on today status"
@@ -211,6 +238,7 @@ else:
 # -----------------------
 
 st.divider()
+st.markdown("<div id='50% – 84%'></div>", unsafe_allow_html=True)
 st.subheader("📊 Districts (50% – 84%) : Last Status vs Today")
 
 progress_today = "Percentage of progress as on today status"
@@ -275,6 +303,7 @@ else:
 # -----------------------
 
 st.divider()
+st.markdown("<div id='85% – 99%'></div>", unsafe_allow_html=True)
 st.subheader("📊 Districts (85% – 99%) : Last Status vs Today")
 
 progress_today = "Percentage of progress as on today status"
@@ -333,5 +362,24 @@ if not filtered_85_100.empty:
 else:
     st.info("No districts currently between 85% and 99%.")
     
+    # -----------------------
+# ACHIEVEMENT SECTION
+# -----------------------
+
+st.divider()
+st.markdown("<div id='achievement-section'></div>", unsafe_allow_html=True)
+st.markdown("## 🏆 ACHIEVEMENT")
+
+if districts_100:
     
+    st.markdown(
+        f"### Fully Completed Districts ({len(districts_100)})"
+    )
+    
+    st.markdown(
+        " | ".join(districts_100)
+    )
+
+else:
+    st.markdown("No districts have achieved full completion yet.")
    
