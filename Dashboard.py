@@ -158,7 +158,7 @@ col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     st.markdown(f"""
     <div class="kpi-card blue">
-        <div class="kpi-title">Total Progress Percentage</div>
+        <div class="kpi-title">Overall Progress Percentage</div>
         <div class="kpi-value">{total_progress_percent:.2f}</div>
     </div>
     """, unsafe_allow_html=True)
@@ -456,3 +456,4 @@ if districts_100:
 else:
     st.markdown("No districts have achieved full completion yet.")
    
+
